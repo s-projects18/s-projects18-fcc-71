@@ -1,6 +1,6 @@
 import re
 
-def arithmetic_arranger(problems, flagDisplay=True):
+def arithmetic_arranger(problems, flagDisplay=False):
   # transform input data --------------
   # list of list with 3 elements in each sublist
   data = list() 
@@ -8,15 +8,24 @@ def arithmetic_arranger(problems, flagDisplay=True):
     t = problem.split(' ')
     if(len(t)!=3):
       return "Wrong input format. Should be e.g.: 23 + 44."
-    if flagDisplay:
+    fi = 0  
+    if flagDisplay: # calc + or -
+      fi = 1
       f=1
       if t[1]=='-':
         f=-1
       t.append(str(int(t[0])+f*int(t[2])))
+
+    # find longest string
+    # ignore last if flag is true  
     m = 0  
-    for s in t:
-      if len(s)>m:
-        m=len(s)
+    mi = 0
+    for i in range(len(t)-fi): 
+      l = len(t[i])
+      if l>m:
+        m=l
+        mi=i
+   
     t.append(m) # last = max-len
     data.append(t)
 
@@ -34,19 +43,52 @@ def arithmetic_arranger(problems, flagDisplay=True):
 
   # main ----------------------------
   lines = []
-  for d in data:
+  sep = '';
+  between = '    '
+
+  for di in range(len(data)):
+    d = data[di]
+    m = d[len(d)-1]
+
+   	# new: calc only the first n-1 lines
+    # if last lines is longer: add extra space for last line
+    # finally: add operator for i=2
+
+    tmp = ''
     for i in range(len(d)-1):
       if i>=len(lines):
         lines.append("")
-      if i==2:
-        lines[i] = lines[i] + d[i-1] + ' '  
-      lines[i] = lines[i] + d[i] + '    '
-  lines = lines[:1] + lines[2:]
-  print( '\n'.join(lines) )
+   
+      # space: pre / post
+      pre = ' ' * (m - len(d[i]))
+      op = '  '
 
-  #todo: padd number / separator
+      if i==2: # operator
+        op = d[i-1] + ' '
+        pre = ' ' * (m - len(d[i]))
 
+      # last row has other rules: there must
+      # NOT be an extra space before operator
+      if flagDisplay and i==len(d)-2:
+        op = ''
+        pre = ' ' * (len(tmp) - len(d[i]))
 
-  arranged_problems = None
+      tmp = op + pre  + d[i]
+      lines[i] = lines[i] + tmp
+      if di<len(data)-1:
+        lines[i] = lines[i] + between
+
+    sep = sep + (m+2)*'-'
+    if di<len(data)-1:
+      sep = sep + between
+
+  sep.strip()
+
+  if flagDisplay:
+    lines = lines[:1] + lines[2:3] + [sep] + lines[3:]
+  else:
+    lines = lines[:1] + lines[2:3] + [sep]
+
+  arranged_problems = "\n".join(lines)
   return arranged_problems
 
