@@ -19,12 +19,10 @@ def arithmetic_arranger(problems, flagDisplay=False):
     # find longest string
     # ignore last if flag is true  
     m = 0  
-    mi = 0
     for i in range(len(t)-fi): 
       l = len(t[i])
       if l>m:
         m=l
-        mi=i
    
     t.append(m) # last = max-len
     data.append(t)
@@ -46,14 +44,12 @@ def arithmetic_arranger(problems, flagDisplay=False):
   sep = '';
   between = '    '
 
+  # all problems
   for di in range(len(data)):
     d = data[di]
     m = d[len(d)-1]
 
-   	# new: calc only the first n-1 lines
-    # if last lines is longer: add extra space for last line
-    # finally: add operator for i=2
-
+    # loop through special problem
     tmp = ''
     for i in range(len(d)-1):
       if i>=len(lines):
